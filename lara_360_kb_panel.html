@@ -418,6 +418,7 @@
   </div>
   <div class="header-right">
     <div class="badge green"><span class="dot"></span> Sincronizado</div>
+    <div class="badge" id="save-status" style="transition: all 0.3s">✓ Guardado</div>
     <button class="btn-copy-kb" onclick="copyKB()">Copiar KB</button>
   </div>
 </header>
@@ -896,7 +897,115 @@
     if (pKbLista) {
       pKbLista.textContent = generateKB();
     }
+    scheduleSave();
   }
+
+  // --- SUPABASE CONFIG ---
+  const SUPABASE_URL = 'https://prktmsnzmjyxunuxuoho.supabase.co';
+  const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBya3Rtc256bWp5eHVudXh1b2hvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgxMDE3ODQsImV4cCI6MjA5MzY3Nzc4NH0.gJmEy4n5sKfOzn3mE4ydh6fQZfQKDBYXQzVd8UClOkI';
+  const KB_ID = 'lara_360_v1';
+
+  const FIELDS = [
+    'agente_nombre','agente_tono','agente_descripcion',
+    'soporte_descripcion','soporte_email','soporte_whatsapp','soporte_web',
+    'admin_descripcion','admin_email','admin_telefono',
+    'postventa_descripcion','postventa_email','postventa_whatsapp','postventa_web',
+    'que_es_descripcion','como_ayuda_texto',
+    'modulo_1_nombre','modulo_1_desc','modulo_2_nombre','modulo_2_desc',
+    'modulo_3_nombre','modulo_3_desc','modulo_4_nombre','modulo_4_desc',
+    'modulo_5_nombre','modulo_5_desc','modulo_6_nombre','modulo_6_desc',
+    'por_que_texto','demo_texto'
+  ];
+
+  let saveTimeout = null;
+
+  function setSaveStatus(status) {
+    const badge = document.getElementById('save-status');
+    if (!badge) return;
+    if (status === 'saving') {
+      badge.textContent = '⏳ Guardando...';
+      badge.style.color = 'var(--muted)';
+      badge.style.borderColor = 'var(--border)';
+    } else if (status === 'saved') {
+      badge.textContent = '✓ Guardado';
+      badge.style.color = 'var(--green)';
+      badge.style.borderColor = 'var(--green)';
+    } else if (status === 'error') {
+      badge.textContent = '✗ Error al guardar';
+      badge.style.color = 'var(--danger)';
+      badge.style.borderColor = 'var(--danger)';
+    } else if (status === 'loading') {
+      badge.textContent = '⏳ Cargando...';
+      badge.style.color = 'var(--muted)';
+      badge.style.borderColor = 'var(--border)';
+    }
+  }
+
+  async function saveToSupabase() {
+    const data = {};
+    FIELDS.forEach(id => {
+      const el = document.getElementById(id);
+      if (el) data[id] = el.value;
+    });
+
+    setSaveStatus('saving');
+
+    try {
+      const res = await fetch(`${SUPABASE_URL}/rest/v1/kb_config`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'apikey': SUPABASE_KEY,
+          'Authorization': `Bearer ${SUPABASE_KEY}`,
+          'Prefer': 'resolution=merge-duplicates'
+        },
+        body: JSON.stringify({ id: KB_ID, data, updated_at: new Date().toISOString() })
+      });
+
+      if (res.ok) {
+        setSaveStatus('saved');
+      } else {
+        setSaveStatus('error');
+      }
+    } catch (e) {
+      setSaveStatus('error');
+    }
+  }
+
+  async function loadFromSupabase() {
+    setSaveStatus('loading');
+    try {
+      const res = await fetch(`${SUPABASE_URL}/rest/v1/kb_config?id=eq.${KB_ID}&select=data`, {
+        headers: {
+          'apikey': SUPABASE_KEY,
+          'Authorization': `Bearer ${SUPABASE_KEY}`
+        }
+      });
+      const rows = await res.json();
+      if (rows.length > 0 && rows[0].data) {
+        const data = rows[0].data;
+        FIELDS.forEach(id => {
+          const el = document.getElementById(id);
+          if (el && data[id] !== undefined) el.value = data[id];
+        });
+        updatePreview();
+        setSaveStatus('saved');
+      } else {
+        setSaveStatus('saved');
+      }
+    } catch (e) {
+      setSaveStatus('error');
+    }
+  }
+
+  // Auto-save con debounce — se llama desde cada oninput además de updatePreview
+  function scheduleSave() {
+    clearTimeout(saveTimeout);
+    saveTimeout = setTimeout(saveToSupabase, 1200);
+  }
+
+  // Load on start
+  window.addEventListener('DOMContentLoaded', loadFromSupabase);
 
   // --- COPY KB ---
   function copyKB() {
