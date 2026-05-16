@@ -913,6 +913,9 @@
     const pq = val('por_que_texto');
     kb += pq ? `${pq}\n\n` : `[Pendiente]\n\n`;
 
+    const prodKB = generateProductosKB();
+    if (prodKB) kb += prodKB;
+
     kb += `## Agendar una demo\n`;
     const demo = val('demo_texto');
     kb += demo ? `${demo}\n` : `[Pendiente]\n`;
