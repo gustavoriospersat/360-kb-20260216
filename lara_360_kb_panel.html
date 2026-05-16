@@ -1,0 +1,916 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lara 360 — Panel de configuración</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0f0f13;
+    --surface: #17171f;
+    --surface2: #1e1e2a;
+    --border: #2a2a3a;
+    --accent: #6c63ff;
+    --accent2: #a78bfa;
+    --green: #34d399;
+    --text: #e8e8f0;
+    --muted: #6b6b80;
+    --danger: #f87171;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    min-height: 100vh;
+  }
+
+  /* HEADER */
+  header {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 0 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 64px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .header-left {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .agent-avatar {
+    width: 38px;
+    height: 38px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+  }
+
+  .agent-info h1 {
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: -0.3px;
+  }
+
+  .agent-info p {
+    font-size: 11px;
+    color: var(--muted);
+    font-family: 'DM Mono', monospace;
+  }
+
+  .header-right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .badge {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-family: 'DM Mono', monospace;
+    border: 1px solid var(--border);
+    color: var(--muted);
+  }
+
+  .badge.green {
+    border-color: var(--green);
+    color: var(--green);
+  }
+
+  .badge .dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--green);
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+
+  .btn-copy-kb {
+    background: var(--accent);
+    color: white;
+    border: none;
+    padding: 8px 18px;
+    border-radius: 8px;
+    font-family: 'Syne', sans-serif;
+    font-weight: 600;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .btn-copy-kb:hover {
+    background: var(--accent2);
+    transform: translateY(-1px);
+  }
+
+  .btn-copy-kb.copied {
+    background: var(--green);
+  }
+
+  /* LAYOUT */
+  .layout {
+    display: flex;
+    height: calc(100vh - 64px);
+  }
+
+  /* SIDEBAR TABS */
+  .sidebar {
+    width: 220px;
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    padding: 20px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    overflow-y: auto;
+    flex-shrink: 0;
+  }
+
+  .sidebar-section {
+    font-size: 10px;
+    font-family: 'DM Mono', monospace;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 12px 8px 6px;
+  }
+
+  .tab-btn {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 12px;
+    border-radius: 8px;
+    border: none;
+    background: transparent;
+    color: var(--muted);
+    font-family: 'Syne', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s;
+    text-align: left;
+    width: 100%;
+  }
+
+  .tab-btn:hover {
+    background: var(--surface2);
+    color: var(--text);
+  }
+
+  .tab-btn.active {
+    background: rgba(108, 99, 255, 0.15);
+    color: var(--accent2);
+    border: 1px solid rgba(108, 99, 255, 0.3);
+  }
+
+  .tab-icon {
+    font-size: 15px;
+    width: 20px;
+    text-align: center;
+  }
+
+  .tab-vacant {
+    opacity: 0.4;
+  }
+
+  .vacant-badge {
+    margin-left: auto;
+    font-size: 9px;
+    font-family: 'DM Mono', monospace;
+    background: var(--surface2);
+    padding: 2px 6px;
+    border-radius: 4px;
+    color: var(--muted);
+  }
+
+  /* CONTENT */
+  .content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 32px;
+  }
+
+  .tab-panel {
+    display: none;
+    max-width: 720px;
+    animation: fadeIn 0.2s ease;
+  }
+
+  .tab-panel.active {
+    display: block;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .panel-header {
+    margin-bottom: 28px;
+  }
+
+  .panel-header h2 {
+    font-size: 22px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    margin-bottom: 6px;
+  }
+
+  .panel-header p {
+    font-size: 13px;
+    color: var(--muted);
+    font-family: 'DM Mono', monospace;
+  }
+
+  /* FIELDS */
+  .field-group {
+    margin-bottom: 20px;
+  }
+
+  .field-group label {
+    display: block;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    margin-bottom: 8px;
+    font-family: 'DM Mono', monospace;
+  }
+
+  .field-group input,
+  .field-group textarea {
+    width: 100%;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px 14px;
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    transition: border-color 0.2s;
+    resize: vertical;
+  }
+
+  .field-group input:focus,
+  .field-group textarea:focus {
+    outline: none;
+    border-color: var(--accent);
+  }
+
+  .field-group textarea {
+    min-height: 100px;
+  }
+
+  .field-group textarea.tall {
+    min-height: 160px;
+  }
+
+  /* MÓDULOS */
+  .modulos-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .modulo-item {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px;
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 12px;
+    align-items: start;
+  }
+
+  .modulo-item input {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 8px 10px;
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    width: 100%;
+  }
+
+  .modulo-item textarea {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 8px 10px;
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    width: 100%;
+    resize: vertical;
+    min-height: 60px;
+  }
+
+  .modulo-item input:focus,
+  .modulo-item textarea:focus {
+    outline: none;
+    border-color: var(--accent);
+  }
+
+  .modulo-num {
+    font-size: 10px;
+    color: var(--accent2);
+    font-family: 'DM Mono', monospace;
+    margin-bottom: 4px;
+  }
+
+  /* VACANT */
+  .vacant-notice {
+    background: var(--surface2);
+    border: 1px dashed var(--border);
+    border-radius: 10px;
+    padding: 32px;
+    text-align: center;
+    color: var(--muted);
+  }
+
+  .vacant-notice .vacant-icon {
+    font-size: 32px;
+    margin-bottom: 12px;
+  }
+
+  .vacant-notice p {
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+  }
+
+  /* PREVIEW */
+  .kb-preview {
+    margin-top: 32px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+
+  .kb-preview-header {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .kb-preview-header span {
+    font-size: 11px;
+    font-family: 'DM Mono', monospace;
+    color: var(--muted);
+  }
+
+  .kb-preview pre {
+    padding: 16px;
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    color: var(--text);
+    white-space: pre-wrap;
+    word-break: break-word;
+    max-height: 200px;
+    overflow-y: auto;
+    line-height: 1.6;
+  }
+
+  .divider {
+    height: 1px;
+    background: var(--border);
+    margin: 28px 0;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-left">
+    <div class="agent-avatar">🤖</div>
+    <div class="agent-info">
+      <h1>Lara — Panel de configuración</h1>
+      <p>Agente IA · Acquisition 360 · Botpress</p>
+    </div>
+  </div>
+  <div class="header-right">
+    <div class="badge green"><span class="dot"></span> Sincronizado</div>
+    <button class="btn-copy-kb" onclick="copyKB()">Copiar KB</button>
+  </div>
+</header>
+
+<div class="layout">
+
+  <!-- SIDEBAR -->
+  <nav class="sidebar">
+    <div class="sidebar-section">General</div>
+    <button class="tab-btn active" onclick="showTab('agente')">
+      <span class="tab-icon">🤖</span> Agente
+    </button>
+
+    <div class="sidebar-section">Ya soy Cliente</div>
+    <button class="tab-btn" onclick="showTab('soporte')">
+      <span class="tab-icon">🛠️</span> Soporte
+    </button>
+    <button class="tab-btn" onclick="showTab('administracion')">
+      <span class="tab-icon">📋</span> Administración
+    </button>
+    <button class="tab-btn" onclick="showTab('postventa')">
+      <span class="tab-icon">🎯</span> Postventa
+    </button>
+
+    <div class="sidebar-section">Asesoramiento</div>
+    <button class="tab-btn" onclick="showTab('que_es')">
+      <span class="tab-icon">❓</span> ¿Qué es Persat?
+    </button>
+    <button class="tab-btn" onclick="showTab('como_ayuda')">
+      <span class="tab-icon">💼</span> ¿Cómo me ayuda?
+    </button>
+    <button class="tab-btn" onclick="showTab('modulos')">
+      <span class="tab-icon">📦</span> Módulos
+    </button>
+    <button class="tab-btn" onclick="showTab('por_que')">
+      <span class="tab-icon">🚀</span> ¿Por qué Persat?
+    </button>
+    <button class="tab-btn" onclick="showTab('demo')">
+      <span class="tab-icon">📅</span> Agendar demo
+    </button>
+
+    <div class="sidebar-section">Output</div>
+    <button class="tab-btn" onclick="showTab('kb_lista')">
+      <span class="tab-icon">📄</span> KB lista
+    </button>
+  </nav>
+
+  <!-- CONTENT -->
+  <main class="content">
+
+    <!-- AGENTE -->
+    <div class="tab-panel active" id="tab-agente">
+      <div class="panel-header">
+        <h2>🤖 Identidad del agente</h2>
+        <p>Configuración base que se inyecta en todas las instrucciones</p>
+      </div>
+      <div class="field-group">
+        <label>Nombre del agente</label>
+        <input type="text" id="agente_nombre" placeholder="Ej: Lara" oninput="updatePreview()">
+      </div>
+      <div class="field-group">
+        <label>Tono</label>
+        <input type="text" id="agente_tono" placeholder="Ej: Cálido, directo y simple. Sin tecnicismos." oninput="updatePreview()">
+      </div>
+      <div class="field-group">
+        <label>Descripción corta</label>
+        <textarea id="agente_descripcion" placeholder="Ej: Asistente IA de Persat para el canal Acquisition 360." oninput="updatePreview()"></textarea>
+      </div>
+      <div class="divider"></div>
+      <div class="kb-preview">
+        <div class="kb-preview-header">
+          <span>Preview KB — Sección Agente</span>
+        </div>
+        <pre id="preview-agente">Completá los campos para ver el preview...</pre>
+      </div>
+    </div>
+
+    <!-- SOPORTE -->
+    <div class="tab-panel" id="tab-soporte">
+      <div class="panel-header">
+        <h2>🛠️ Soporte</h2>
+        <p>Canales de contacto para problemas técnicos</p>
+      </div>
+      <div class="field-group">
+        <label>Descripción</label>
+        <textarea id="soporte_descripcion" placeholder="Ej: Para preguntas o inconvenientes con la herramienta, el equipo de soporte está para ayudarte." oninput="updatePreview()"></textarea>
+      </div>
+      <div class="field-group">
+        <label>Email</label>
+        <input type="text" id="soporte_email" placeholder="Ej: clientes@persat.com.ar" oninput="updatePreview()">
+      </div>
+      <div class="field-group">
+        <label>WhatsApp</label>
+        <input type="text" id="soporte_whatsapp" placeholder="Ej: +54 11 5855 0428" oninput="updatePreview()">
+      </div>
+      <div class="field-group">
+        <label>Link web</label>
+        <input type="text" id="soporte_web" placeholder="Ej: https://www.persat-latam.com/" oninput="updatePreview()">
+      </div>
+      <div class="divider"></div>
+      <div class="kb-preview">
+        <div class="kb-preview-header">
+          <span>Preview KB — Sección Soporte</span>
+        </div>
+        <pre id="preview-soporte">Completá los campos para ver el preview...</pre>
+      </div>
+    </div>
+
+    <!-- ADMINISTRACIÓN -->
+    <div class="tab-panel" id="tab-administracion">
+      <div class="panel-header">
+        <h2>📋 Administración</h2>
+        <p>Canales para gestiones administrativas</p>
+      </div>
+      <div class="field-group">
+        <label>Descripción</label>
+        <textarea id="admin_descripcion" placeholder="Ej: Para revisar facturas, detalles de suscripción o estado de cuenta." oninput="updatePreview()"></textarea>
+      </div>
+      <div class="field-group">
+        <label>Email</label>
+        <input type="text" id="admin_email" placeholder="Ej: administracion@persat.com.ar" oninput="updatePreview()">
+      </div>
+      <div class="field-group">
+        <label>Teléfono</label>
+        <input type="text" id="admin_telefono" placeholder="Ej: +54 9 11 2188 1221" oninput="updatePreview()">
+      </div>
+      <div class="divider"></div>
+      <div class="kb-preview">
+        <div class="kb-preview-header">
+          <span>Preview KB — Sección Administración</span>
+        </div>
+        <pre id="preview-administracion">Completá los campos para ver el preview...</pre>
+      </div>
+    </div>
+
+    <!-- POSTVENTA -->
+    <div class="tab-panel" id="tab-postventa">
+      <div class="panel-header">
+        <h2>🎯 Postventa</h2>
+        <p>Canales para gestiones de postventa / customer success</p>
+      </div>
+      <div class="field-group">
+        <label>Descripción</label>
+        <textarea id="postventa_descripcion" placeholder="Ej: Para consultas de postventa, nuestro equipo especializado te acompaña." oninput="updatePreview()"></textarea>
+      </div>
+      <div class="field-group">
+        <label>Email</label>
+        <input type="text" id="postventa_email" placeholder="Ej: postventa@persat.com.ar" oninput="updatePreview()">
+      </div>
+      <div class="field-group">
+        <label>WhatsApp</label>
+        <input type="text" id="postventa_whatsapp" placeholder="Ej: +54 11 0000 0000" oninput="updatePreview()">
+      </div>
+      <div class="field-group">
+        <label>Link web</label>
+        <input type="text" id="postventa_web" placeholder="Ej: https://www.persat-latam.com/" oninput="updatePreview()">
+      </div>
+      <div class="divider"></div>
+      <div class="kb-preview">
+        <div class="kb-preview-header">
+          <span>Preview KB — Sección Postventa</span>
+        </div>
+        <pre id="preview-postventa">Completá los campos para ver el preview...</pre>
+      </div>
+    </div>
+
+    <!-- QUÉ ES PERSAT -->
+    <div class="tab-panel" id="tab-que_es">
+      <div class="panel-header">
+        <h2>❓ ¿Qué es Persat?</h2>
+        <p>Descripción general del producto para prospectos</p>
+      </div>
+      <div class="field-group">
+        <label>Descripción del producto</label>
+        <textarea class="tall" id="que_es_descripcion" placeholder="Ej: Persat es una plataforma de gestión para empresas de servicios..." oninput="updatePreview()"></textarea>
+      </div>
+      <div class="divider"></div>
+      <div class="kb-preview">
+        <div class="kb-preview-header">
+          <span>Preview KB — Sección ¿Qué es Persat?</span>
+        </div>
+        <pre id="preview-que_es">Completá los campos para ver el preview...</pre>
+      </div>
+    </div>
+
+    <!-- CÓMO ME AYUDA -->
+    <div class="tab-panel" id="tab-como_ayuda">
+      <div class="panel-header">
+        <h2>💼 ¿Cómo me ayuda en mi negocio?</h2>
+        <p>Beneficios y casos de uso para prospectos</p>
+      </div>
+      <div class="field-group">
+        <label>Beneficios y casos de uso</label>
+        <textarea class="tall" id="como_ayuda_texto" placeholder="Ej: Persat te ayuda a gestionar tu equipo de campo, automatizar procesos, reducir tiempos..." oninput="updatePreview()"></textarea>
+      </div>
+      <div class="divider"></div>
+      <div class="kb-preview">
+        <div class="kb-preview-header">
+          <span>Preview KB — Sección ¿Cómo me ayuda?</span>
+        </div>
+        <pre id="preview-como_ayuda">Completá los campos para ver el preview...</pre>
+      </div>
+    </div>
+
+    <!-- MÓDULOS -->
+    <div class="tab-panel" id="tab-modulos">
+      <div class="panel-header">
+        <h2>📦 Módulos</h2>
+        <p>Listado de módulos del producto</p>
+      </div>
+      <div class="modulos-list" id="modulos-list">
+        <!-- generado por JS -->
+      </div>
+      <div class="divider"></div>
+      <div class="kb-preview">
+        <div class="kb-preview-header">
+          <span>Preview KB — Sección Módulos</span>
+        </div>
+        <pre id="preview-modulos">Completá los campos para ver el preview...</pre>
+      </div>
+    </div>
+
+    <!-- POR QUÉ PERSAT -->
+    <div class="tab-panel" id="tab-por_que">
+      <div class="panel-header">
+        <h2>🚀 ¿Por qué elegir Persat?</h2>
+        <p>Diferenciadores y propuesta de valor</p>
+      </div>
+      <div class="field-group">
+        <label>Diferenciadores</label>
+        <textarea class="tall" id="por_que_texto" placeholder="Ej: Persat se diferencia por su facilidad de uso, soporte en español, activación en 48hs..." oninput="updatePreview()"></textarea>
+      </div>
+      <div class="divider"></div>
+      <div class="kb-preview">
+        <div class="kb-preview-header">
+          <span>Preview KB — Sección ¿Por qué Persat?</span>
+        </div>
+        <pre id="preview-por_que">Completá los campos para ver el preview...</pre>
+      </div>
+    </div>
+
+    <!-- AGENDAR DEMO -->
+    <div class="tab-panel" id="tab-demo">
+      <div class="panel-header">
+        <h2>📅 Agendar una demo</h2>
+        <p>Info del proceso post-agendamiento</p>
+      </div>
+      <div class="field-group">
+        <label>¿Qué pasa después de agendar?</label>
+        <textarea class="tall" id="demo_texto" placeholder="Ej: Un SDR se va a comunicar con vos para coordinar la demo. La demo es personalizada y sin compromiso..." oninput="updatePreview()"></textarea>
+      </div>
+      <div class="divider"></div>
+      <div class="kb-preview">
+        <div class="kb-preview-header">
+          <span>Preview KB — Sección Demo</span>
+        </div>
+        <pre id="preview-demo">Completá los campos para ver el preview...</pre>
+      </div>
+    </div>
+
+    <!-- KB LISTA -->
+    <div class="tab-panel" id="tab-kb_lista">
+      <div class="panel-header">
+        <h2>📄 KB lista</h2>
+        <p>Toda la Knowledge Base generada en tiempo real. Copiala directo desde acá.</p>
+      </div>
+      <div class="kb-preview" style="margin-top:0">
+        <div class="kb-preview-header">
+          <span>Knowledge Base completa</span>
+          <button class="btn-copy-kb" onclick="copyKB()" style="padding:4px 12px;font-size:12px">Copiar KB</button>
+        </div>
+        <pre id="preview-kb-lista" style="max-height: calc(100vh - 280px); font-size:13px; line-height:1.7">Completá los campos en las otras tabs para ver la KB...</pre>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<script>
+  // --- TABS ---
+  function showTab(id) {
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('tab-' + id).classList.add('active');
+    event.currentTarget.classList.add('active');
+    updatePreview();
+  }
+
+  // --- MÓDULOS ---
+  const NUM_MODULOS = 6;
+  function buildModulos() {
+    const list = document.getElementById('modulos-list');
+    list.innerHTML = '';
+    for (let i = 1; i <= NUM_MODULOS; i++) {
+      list.innerHTML += `
+        <div class="modulo-item">
+          <div>
+            <div class="modulo-num">MÓDULO ${i}</div>
+            <input type="text" id="modulo_${i}_nombre" placeholder="Nombre del módulo" oninput="updatePreview()">
+          </div>
+          <div>
+            <div class="modulo-num">DESCRIPCIÓN</div>
+            <textarea id="modulo_${i}_desc" placeholder="Descripción breve..." oninput="updatePreview()"></textarea>
+          </div>
+        </div>`;
+    }
+  }
+  buildModulos();
+
+  // --- PREVIEW & KB ---
+  function val(id) {
+    const el = document.getElementById(id);
+    return el ? el.value.trim() : '';
+  }
+
+  function generateKB() {
+    const nombre = val('agente_nombre') || '[NOMBRE]';
+    const tono = val('agente_tono') || '[TONO]';
+    const desc = val('agente_descripcion') || '[DESCRIPCIÓN]';
+
+    let kb = `# Knowledge Base — ${nombre} (Acquisition 360)\n\n`;
+
+    kb += `## Identidad del agente\n`;
+    kb += `Nombre: ${nombre}\n`;
+    kb += `Tono: ${tono}\n`;
+    kb += `Descripción: ${desc}\n\n`;
+
+    kb += `## Soporte\n`;
+    const sdesc = val('soporte_descripcion');
+    const semail = val('soporte_email');
+    const swa = val('soporte_whatsapp');
+    const sweb = val('soporte_web');
+    if (sdesc) kb += `${sdesc}\n`;
+    if (semail) kb += `Email: ${semail}\n`;
+    if (swa) kb += `WhatsApp: ${swa}\n`;
+    if (sweb) kb += `Web: ${sweb}\n`;
+    kb += `\n`;
+
+    kb += `## Administración\n`;
+    const adesc = val('admin_descripcion');
+    const aemail = val('admin_email');
+    const atel = val('admin_telefono');
+    if (adesc) kb += `${adesc}\n`;
+    if (aemail) kb += `Email: ${aemail}\n`;
+    if (atel) kb += `Teléfono: ${atel}\n`;
+    kb += `\n`;
+
+    kb += `## Postventa\n`;
+    const pdesc = val('postventa_descripcion');
+    const pcanal = val('postventa_canal');
+    if (pdesc) kb += `${pdesc}\n`;
+    if (pcanal) kb += `Canal: ${pcanal}\n`;
+    if (!pdesc && !pcanal) kb += `[Pendiente — sin información cargada]\n`;
+    kb += `\n`;
+
+    kb += `## ¿Qué es Persat?\n`;
+    const qe = val('que_es_descripcion');
+    kb += qe ? `${qe}\n\n` : `[Pendiente]\n\n`;
+
+    kb += `## ¿Cómo ayuda en el negocio?\n`;
+    const ca = val('como_ayuda_texto');
+    kb += ca ? `${ca}\n\n` : `[Pendiente]\n\n`;
+
+    kb += `## Módulos\n`;
+    for (let i = 1; i <= NUM_MODULOS; i++) {
+      const mn = val(`modulo_${i}_nombre`);
+      const md = val(`modulo_${i}_desc`);
+      if (mn) kb += `- ${mn}: ${md || '[sin descripción]'}\n`;
+    }
+    kb += `\n`;
+
+    kb += `## ¿Por qué elegir Persat?\n`;
+    const pq = val('por_que_texto');
+    kb += pq ? `${pq}\n\n` : `[Pendiente]\n\n`;
+
+    kb += `## Agendar una demo\n`;
+    const demo = val('demo_texto');
+    kb += demo ? `${demo}\n` : `[Pendiente]\n`;
+
+    return kb;
+  }
+
+  function updatePreview() {
+    const kb = generateKB();
+
+    // agente preview
+    const pAgente = document.getElementById('preview-agente');
+    if (pAgente) {
+      const nombre = val('agente_nombre') || '[NOMBRE]';
+      const tono = val('agente_tono') || '[TONO]';
+      const desc = val('agente_descripcion') || '[DESCRIPCIÓN]';
+      pAgente.textContent = `## Identidad del agente\nNombre: ${nombre}\nTono: ${tono}\nDescripción: ${desc}`;
+    }
+
+    const pSoporte = document.getElementById('preview-soporte');
+    if (pSoporte) {
+      let t = `## Soporte\n`;
+      const sdesc = val('soporte_descripcion');
+      const semail = val('soporte_email');
+      const swa = val('soporte_whatsapp');
+      const sweb = val('soporte_web');
+      if (sdesc) t += `${sdesc}\n`;
+      if (semail) t += `✉️ ${semail}\n`;
+      if (swa) t += `💬 WhatsApp: ${swa}\n`;
+      if (sweb) t += `🌐 ${sweb}`;
+      pSoporte.textContent = t || 'Completá los campos para ver el preview...';
+    }
+
+    const pAdmin = document.getElementById('preview-administracion');
+    if (pAdmin) {
+      let t = `## Administración\n`;
+      const adesc = val('admin_descripcion');
+      const aemail = val('admin_email');
+      const atel = val('admin_telefono');
+      if (adesc) t += `${adesc}\n`;
+      if (aemail) t += `✉️ ${aemail}\n`;
+      if (atel) t += `📞 ${atel}`;
+      pAdmin.textContent = t || 'Completá los campos para ver el preview...';
+    }
+
+    const pQe = document.getElementById('preview-que_es');
+    if (pQe) {
+      const qe = val('que_es_descripcion');
+      pQe.textContent = qe ? `## ¿Qué es Persat?\n${qe}` : 'Completá los campos para ver el preview...';
+    }
+
+    const pCa = document.getElementById('preview-como_ayuda');
+    if (pCa) {
+      const ca = val('como_ayuda_texto');
+      pCa.textContent = ca ? `## ¿Cómo ayuda en el negocio?\n${ca}` : 'Completá los campos para ver el preview...';
+    }
+
+    const pMod = document.getElementById('preview-modulos');
+    if (pMod) {
+      let t = `## Módulos\n`;
+      let hasContent = false;
+      for (let i = 1; i <= NUM_MODULOS; i++) {
+        const mn = val(`modulo_${i}_nombre`);
+        const md = val(`modulo_${i}_desc`);
+        if (mn) { t += `- ${mn}: ${md || '[sin descripción]'}\n`; hasContent = true; }
+      }
+      pMod.textContent = hasContent ? t : 'Completá los campos para ver el preview...';
+    }
+
+    const pPv = document.getElementById('preview-postventa');
+    if (pPv) {
+      let t = `## Postventa
+`;
+      const pvdesc = val('postventa_descripcion');
+      const pvemail = val('postventa_email');
+      const pvwa = val('postventa_whatsapp');
+      const pvweb = val('postventa_web');
+      if (pvdesc) t += `${pvdesc}
+`;
+      if (pvemail) t += `✉️ ${pvemail}
+`;
+      if (pvwa) t += `💬 WhatsApp: ${pvwa}
+`;
+      if (pvweb) t += `🌐 ${pvweb}`;
+      pPv.textContent = t.trim() === '## Postventa' ? 'Completá los campos para ver el preview...' : t;
+    }
+
+    const pPq = document.getElementById('preview-por_que');
+    if (pPq) {
+      const pq = val('por_que_texto');
+      pPq.textContent = pq ? `## ¿Por qué elegir Persat?\n${pq}` : 'Completá los campos para ver el preview...';
+    }
+
+    const pDemo = document.getElementById('preview-demo');
+    if (pDemo) {
+      const demo = val('demo_texto');
+      pDemo.textContent = demo ? `## Agendar una demo\n${demo}` : 'Completá los campos para ver el preview...';
+    }
+
+    const pKbLista = document.getElementById('preview-kb-lista');
+    if (pKbLista) {
+      pKbLista.textContent = generateKB();
+    }
+  }
+
+  // --- COPY KB ---
+  function copyKB() {
+    const kb = generateKB();
+    navigator.clipboard.writeText(kb).then(() => {
+      const btn = document.querySelector('.btn-copy-kb');
+      btn.textContent = '✓ Copiado';
+      btn.classList.add('copied');
+      setTimeout(() => {
+        btn.textContent = 'Copiar KB';
+        btn.classList.remove('copied');
+      }, 2000);
+    });
+  }
+</script>
+</body>
+</html>
