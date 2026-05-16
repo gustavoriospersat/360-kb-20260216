@@ -399,6 +399,103 @@
     line-height: 1.6;
   }
 
+  /* PRODUCTOS */
+  .productos-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .producto-item {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    position: relative;
+  }
+
+  .producto-item-header {
+    display: grid;
+    grid-template-columns: 60px 1fr auto;
+    gap: 10px;
+    align-items: center;
+  }
+
+  .producto-item input,
+  .producto-item textarea {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 8px 10px;
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    width: 100%;
+    transition: border-color 0.2s;
+  }
+
+  .producto-item input:focus,
+  .producto-item textarea:focus {
+    outline: none;
+    border-color: var(--accent);
+  }
+
+  .producto-item textarea {
+    min-height: 70px;
+    resize: vertical;
+  }
+
+  .producto-label {
+    font-size: 10px;
+    color: var(--accent2);
+    font-family: 'DM Mono', monospace;
+    margin-bottom: 3px;
+  }
+
+  .btn-add-producto {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 16px;
+    border-radius: 8px;
+    border: 1px dashed var(--border);
+    background: transparent;
+    color: var(--muted);
+    font-family: 'Syne', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    width: 100%;
+    justify-content: center;
+    margin-top: 4px;
+  }
+
+  .btn-add-producto:hover {
+    border-color: var(--accent);
+    color: var(--accent2);
+  }
+
+  .btn-delete-producto {
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--muted);
+    cursor: pointer;
+    padding: 6px 10px;
+    font-size: 13px;
+    transition: all 0.2s;
+    flex-shrink: 0;
+  }
+
+  .btn-delete-producto:hover {
+    border-color: var(--danger);
+    color: var(--danger);
+  }
+
   .divider {
     height: 1px;
     background: var(--border);
@@ -458,6 +555,11 @@
     </button>
     <button class="tab-btn" onclick="showTab('demo')">
       <span class="tab-icon">📅</span> Agendar demo
+    </button>
+
+    <div class="sidebar-section">Productos</div>
+    <button class="tab-btn" onclick="showTab('productos')">
+      <span class="tab-icon">🧩</span> Productos
     </button>
 
     <div class="sidebar-section">Output</div>
@@ -679,6 +781,23 @@
       </div>
     </div>
 
+    <!-- PRODUCTOS -->
+    <div class="tab-panel" id="tab-productos">
+      <div class="panel-header">
+        <h2>🧩 Productos complementarios</h2>
+        <p>Agregá, editá o eliminá productos. Se guardan automáticamente.</p>
+      </div>
+      <div class="productos-list" id="productos-list"></div>
+      <button class="btn-add-producto" onclick="addProducto()">+ Agregar producto</button>
+      <div class="divider"></div>
+      <div class="kb-preview">
+        <div class="kb-preview-header">
+          <span>Preview KB — Sección Productos</span>
+        </div>
+        <pre id="preview-productos">Agregá productos para ver el preview...</pre>
+      </div>
+    </div>
+
     <!-- KB LISTA -->
     <div class="tab-panel" id="tab-kb_lista">
       <div class="panel-header">
@@ -893,11 +1012,91 @@
       pDemo.textContent = demo ? `## Agendar una demo\n${demo}` : 'Completá los campos para ver el preview...';
     }
 
+    const pProd = document.getElementById('preview-productos');
+    if (pProd) {
+      const prodKB = generateProductosKB();
+      pProd.textContent = prodKB || 'Agregá productos para ver el preview...';
+    }
+
     const pKbLista = document.getElementById('preview-kb-lista');
     if (pKbLista) {
       pKbLista.textContent = generateKB();
     }
     scheduleSave();
+  }
+
+  // --- PRODUCTOS DINÁMICOS ---
+  let productos = [];
+
+  function renderProductos() {
+    const list = document.getElementById('productos-list');
+    if (!list) return;
+    list.innerHTML = '';
+    productos.forEach((p, i) => {
+      list.innerHTML += `
+        <div class="producto-item" id="producto-item-${i}">
+          <div class="producto-item-header">
+            <div>
+              <div class="producto-label">EMOJI</div>
+              <input type="text" value="${p.emoji || ''}" placeholder="🧩"
+                oninput="updateProducto(${i}, 'emoji', this.value)" maxlength="4" style="text-align:center;font-size:20px;padding:4px">
+            </div>
+            <div>
+              <div class="producto-label">NOMBRE</div>
+              <input type="text" value="${p.nombre || ''}" placeholder="Nombre del producto"
+                oninput="updateProducto(${i}, 'nombre', this.value)">
+            </div>
+            <button class="btn-delete-producto" onclick="deleteProducto(${i})" title="Eliminar">🗑</button>
+          </div>
+          <div>
+            <div class="producto-label">DESCRIPCIÓN</div>
+            <textarea placeholder="Descripción del producto..." oninput="updateProducto(${i}, 'descripcion', this.value)">${p.descripcion || ''}</textarea>
+          </div>
+        </div>`;
+    });
+    updatePreview();
+  }
+
+  function addProducto() {
+    productos.push({ emoji: '', nombre: '', descripcion: '' });
+    renderProductos();
+    // focus on new item name
+    const items = document.querySelectorAll('.producto-item');
+    if (items.length) {
+      const last = items[items.length - 1];
+      const input = last.querySelector('input[placeholder="Nombre del producto"]');
+      if (input) input.focus();
+    }
+  }
+
+  function deleteProducto(i) {
+    productos.splice(i, 1);
+    renderProductos();
+    scheduleSave();
+  }
+
+  function updateProducto(i, field, value) {
+    productos[i][field] = value;
+    updatePreview();
+    scheduleSave();
+  }
+
+  function generateProductosKB() {
+    if (!productos.length) return '';
+    let kb = `## Productos complementarios
+
+`;
+    productos.forEach(p => {
+      if (p.nombre) {
+        kb += `### ${p.emoji ? p.emoji + ' ' : ''}${p.nombre}
+`;
+        if (p.descripcion) kb += `${p.descripcion}
+`;
+        kb += `
+`;
+      }
+    });
+    return kb;
   }
 
   // --- SUPABASE CONFIG ---
@@ -947,6 +1146,7 @@
       const el = document.getElementById(id);
       if (el) data[id] = el.value;
     });
+    data['_productos'] = productos;
 
     setSaveStatus('saving');
 
@@ -988,6 +1188,10 @@
           const el = document.getElementById(id);
           if (el && data[id] !== undefined) el.value = data[id];
         });
+        if (data['_productos'] && Array.isArray(data['_productos'])) {
+          productos = data['_productos'];
+          renderProductos();
+        }
         updatePreview();
         setSaveStatus('saved');
       } else {
