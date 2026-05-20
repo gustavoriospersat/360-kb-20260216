@@ -387,6 +387,27 @@
     color: var(--muted);
   }
 
+  .btn-copy-section {
+    padding: 4px 12px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--muted);
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    cursor: pointer;
+    transition: all 0.15s;
+    margin-left: auto;
+  }
+  .btn-copy-section:hover {
+    border-color: var(--accent);
+    color: var(--accent2);
+  }
+  .btn-copy-section.copied {
+    border-color: var(--green);
+    color: var(--green);
+  }
+
   .kb-preview pre {
     padding: 16px;
     font-family: 'DM Mono', monospace;
@@ -501,6 +522,306 @@
     background: var(--border);
     margin: 28px 0;
   }
+
+  /* ── NUEVA SECCIÓN BUTTON ── */
+  .btn-new-section {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 12px;
+    border-radius: 8px;
+    border: 1px dashed rgba(108,99,255,0.4);
+    background: transparent;
+    color: var(--accent2);
+    font-family: 'Syne', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    width: 100%;
+    margin-top: 8px;
+    opacity: 0.7;
+  }
+  .btn-new-section:hover {
+    opacity: 1;
+    background: rgba(108,99,255,0.08);
+    border-color: var(--accent);
+  }
+
+  /* ── MODAL ── */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.6);
+    backdrop-filter: blur(4px);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+  }
+  .modal-overlay.open {
+    display: flex;
+  }
+  .modal {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 28px;
+    width: 480px;
+    max-width: 95vw;
+    animation: fadeIn 0.15s ease;
+  }
+  .modal h3 {
+    font-size: 17px;
+    font-weight: 800;
+    margin-bottom: 4px;
+    letter-spacing: -0.3px;
+  }
+  .modal .modal-sub {
+    font-size: 12px;
+    color: var(--muted);
+    font-family: 'DM Mono', monospace;
+    margin-bottom: 22px;
+  }
+  .modal .field-group { margin-bottom: 16px; }
+  .modal-row {
+    display: grid;
+    grid-template-columns: 70px 1fr;
+    gap: 10px;
+  }
+  .modal-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 22px;
+    justify-content: flex-end;
+  }
+  .btn-modal-cancel {
+    padding: 9px 18px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--muted);
+    font-family: 'Syne', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .btn-modal-cancel:hover { color: var(--text); border-color: var(--text); }
+  .btn-modal-create {
+    padding: 9px 20px;
+    border-radius: 8px;
+    border: none;
+    background: var(--accent);
+    color: white;
+    font-family: 'Syne', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .btn-modal-create:hover { background: var(--accent2); }
+
+  /* ── TIPO SELECTOR ── */
+  .type-selector {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+  .type-option {
+    padding: 10px 12px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: var(--surface2);
+    cursor: pointer;
+    transition: all 0.15s;
+    text-align: left;
+  }
+  .type-option:hover { border-color: var(--accent); }
+  .type-option.selected {
+    border-color: var(--accent);
+    background: rgba(108,99,255,0.12);
+  }
+  .type-option .type-icon { font-size: 18px; display: block; margin-bottom: 5px; }
+  .type-option .type-name {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--text);
+    display: block;
+  }
+  .type-option .type-desc {
+    font-size: 11px;
+    color: var(--muted);
+    font-family: 'DM Mono', monospace;
+    display: block;
+    margin-top: 2px;
+  }
+
+  /* ── CUSTOM SECTION PANEL ── */
+  .custom-section-meta {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 16px;
+  }
+  .custom-section-meta .meta-info {
+    flex: 1;
+  }
+  .custom-section-meta .meta-label {
+    font-size: 10px;
+    color: var(--muted);
+    font-family: 'DM Mono', monospace;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    margin-bottom: 2px;
+  }
+  .custom-section-meta input.meta-input {
+    background: transparent;
+    border: none;
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    width: 100%;
+    padding: 0;
+  }
+  .custom-section-meta input.meta-input:focus { outline: none; }
+  .btn-delete-section {
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--muted);
+    cursor: pointer;
+    padding: 8px 12px;
+    font-size: 13px;
+    transition: all 0.2s;
+    font-family: 'Syne', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  .btn-delete-section:hover {
+    border-color: var(--danger);
+    color: var(--danger);
+  }
+
+  /* ── ITEMS DE SECCIÓN CUSTOM (tipo lista) ── */
+  .custom-items-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .custom-item {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    position: relative;
+  }
+  .custom-item-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .custom-item-header input {
+    flex: 1;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 7px 10px;
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    font-weight: 600;
+  }
+  .custom-item-header input:focus { outline: none; border-color: var(--accent); }
+  .custom-item textarea {
+    width: 100%;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 8px 10px;
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    resize: vertical;
+    min-height: 70px;
+    transition: border-color 0.2s;
+  }
+  .custom-item textarea:focus { outline: none; border-color: var(--accent); }
+  .btn-delete-item {
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--muted);
+    cursor: pointer;
+    padding: 6px 10px;
+    font-size: 13px;
+    transition: all 0.2s;
+    flex-shrink: 0;
+  }
+  .btn-delete-item:hover { border-color: var(--danger); color: var(--danger); }
+  .btn-add-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 16px;
+    border-radius: 8px;
+    border: 1px dashed var(--border);
+    background: transparent;
+    color: var(--muted);
+    font-family: 'Syne', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    width: 100%;
+    justify-content: center;
+    margin-top: 4px;
+  }
+  .btn-add-item:hover { border-color: var(--accent); color: var(--accent2); }
+
+  /* sidebar badge custom */
+  .tab-custom-badge {
+    margin-left: auto;
+    font-size: 9px;
+    font-family: 'DM Mono', monospace;
+    background: rgba(108,99,255,0.15);
+    padding: 2px 6px;
+    border-radius: 4px;
+    color: var(--accent2);
+  }
+
+  /* grupo selector en modal */
+  .group-selector {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .group-pill {
+    padding: 5px 12px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    background: var(--surface2);
+    color: var(--muted);
+    font-size: 12px;
+    font-family: 'DM Mono', monospace;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .group-pill:hover { border-color: var(--accent); color: var(--text); }
+  .group-pill.selected {
+    border-color: var(--accent);
+    background: rgba(108,99,255,0.15);
+    color: var(--accent2);
+  }
 </style>
 </head>
 <body>
@@ -562,6 +883,13 @@
       <span class="tab-icon">🧩</span> Productos
     </button>
 
+    <!-- SECCIONES CUSTOM (se inyectan acá por JS) -->
+    <div id="custom-sidebar-sections"></div>
+
+    <button class="btn-new-section" onclick="openNewSectionModal()">
+      ＋ Nueva sección
+    </button>
+
     <div class="sidebar-section">Output</div>
     <button class="tab-btn" onclick="showTab('kb_lista')">
       <span class="tab-icon">📄</span> KB lista
@@ -593,6 +921,7 @@
       <div class="kb-preview">
         <div class="kb-preview-header">
           <span>Preview KB — Sección Agente</span>
+        <button class="btn-copy-section" onclick="copySectionFromHeader(this)">Copiar sección</button>
         </div>
         <pre id="preview-agente">Completá los campos para ver el preview...</pre>
       </div>
@@ -624,6 +953,7 @@
       <div class="kb-preview">
         <div class="kb-preview-header">
           <span>Preview KB — Sección Soporte</span>
+        <button class="btn-copy-section" onclick="copySectionFromHeader(this)">Copiar sección</button>
         </div>
         <pre id="preview-soporte">Completá los campos para ver el preview...</pre>
       </div>
@@ -651,6 +981,7 @@
       <div class="kb-preview">
         <div class="kb-preview-header">
           <span>Preview KB — Sección Administración</span>
+        <button class="btn-copy-section" onclick="copySectionFromHeader(this)">Copiar sección</button>
         </div>
         <pre id="preview-administracion">Completá los campos para ver el preview...</pre>
       </div>
@@ -682,6 +1013,7 @@
       <div class="kb-preview">
         <div class="kb-preview-header">
           <span>Preview KB — Sección Postventa</span>
+        <button class="btn-copy-section" onclick="copySectionFromHeader(this)">Copiar sección</button>
         </div>
         <pre id="preview-postventa">Completá los campos para ver el preview...</pre>
       </div>
@@ -701,6 +1033,7 @@
       <div class="kb-preview">
         <div class="kb-preview-header">
           <span>Preview KB — Sección ¿Qué es Persat?</span>
+        <button class="btn-copy-section" onclick="copySectionFromHeader(this)">Copiar sección</button>
         </div>
         <pre id="preview-que_es">Completá los campos para ver el preview...</pre>
       </div>
@@ -720,6 +1053,7 @@
       <div class="kb-preview">
         <div class="kb-preview-header">
           <span>Preview KB — Sección ¿Cómo me ayuda?</span>
+        <button class="btn-copy-section" onclick="copySectionFromHeader(this)">Copiar sección</button>
         </div>
         <pre id="preview-como_ayuda">Completá los campos para ver el preview...</pre>
       </div>
@@ -738,6 +1072,7 @@
       <div class="kb-preview">
         <div class="kb-preview-header">
           <span>Preview KB — Sección Módulos</span>
+        <button class="btn-copy-section" onclick="copySectionFromHeader(this)">Copiar sección</button>
         </div>
         <pre id="preview-modulos">Completá los campos para ver el preview...</pre>
       </div>
@@ -757,6 +1092,7 @@
       <div class="kb-preview">
         <div class="kb-preview-header">
           <span>Preview KB — Sección ¿Por qué Persat?</span>
+        <button class="btn-copy-section" onclick="copySectionFromHeader(this)">Copiar sección</button>
         </div>
         <pre id="preview-por_que">Completá los campos para ver el preview...</pre>
       </div>
@@ -776,6 +1112,7 @@
       <div class="kb-preview">
         <div class="kb-preview-header">
           <span>Preview KB — Sección Demo</span>
+        <button class="btn-copy-section" onclick="copySectionFromHeader(this)">Copiar sección</button>
         </div>
         <pre id="preview-demo">Completá los campos para ver el preview...</pre>
       </div>
@@ -793,6 +1130,7 @@
       <div class="kb-preview">
         <div class="kb-preview-header">
           <span>Preview KB — Sección Productos</span>
+        <button class="btn-copy-section" onclick="copySectionFromHeader(this)">Copiar sección</button>
         </div>
         <pre id="preview-productos">Agregá productos para ver el preview...</pre>
       </div>
@@ -813,7 +1151,62 @@
       </div>
     </div>
 
-  </main>
+  <!-- PANELES CUSTOM (se inyectan acá por JS) -->
+  <div id="custom-tab-panels"></div>
+
+</main>
+</div>
+
+<!-- MODAL NUEVA SECCIÓN -->
+<div class="modal-overlay" id="modal-overlay" onclick="handleOverlayClick(event)">
+  <div class="modal">
+    <h3>✨ Nueva sección</h3>
+    <p class="modal-sub">Definí el nombre, emoji y tipo de contenido</p>
+
+    <div class="field-group">
+      <label>Nombre de la sección</label>
+      <div class="modal-row">
+        <div>
+          <input type="text" id="modal-emoji" placeholder="🏆" maxlength="4"
+            style="text-align:center;font-size:20px;padding:8px 6px;width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:'DM Mono',monospace;">
+        </div>
+        <input type="text" id="modal-nombre" placeholder="Ej: Casos de Éxito"
+          style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:10px 14px;color:var(--text);font-family:'DM Mono',monospace;font-size:13px;width:100%;">
+      </div>
+    </div>
+
+    <div class="field-group">
+      <label>Grupo en el sidebar</label>
+      <div class="group-selector" id="modal-group-selector">
+        <div class="group-pill selected" data-group="General" onclick="selectGroup(this)">General</div>
+        <div class="group-pill" data-group="Ya soy Cliente" onclick="selectGroup(this)">Ya soy Cliente</div>
+        <div class="group-pill" data-group="Asesoramiento" onclick="selectGroup(this)">Asesoramiento</div>
+        <div class="group-pill" data-group="Productos" onclick="selectGroup(this)">Productos</div>
+        <div class="group-pill" data-group="Otros" onclick="selectGroup(this)">Otros</div>
+      </div>
+    </div>
+
+    <div class="field-group">
+      <label>Tipo de contenido</label>
+      <div class="type-selector">
+        <div class="type-option selected" data-type="lista" onclick="selectType(this)">
+          <span class="type-icon">📋</span>
+          <span class="type-name">Lista de items</span>
+          <span class="type-desc">Título + descripción por item. Ideal para casos, testimonios, FAQs.</span>
+        </div>
+        <div class="type-option" data-type="texto" onclick="selectType(this)">
+          <span class="type-icon">✏️</span>
+          <span class="type-name">Texto libre</span>
+          <span class="type-desc">Un solo campo de texto largo. Ideal para políticas, instrucciones.</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn-modal-cancel" onclick="closeNewSectionModal()">Cancelar</button>
+      <button class="btn-modal-create" onclick="createCustomSection()">Crear sección</button>
+    </div>
+  </div>
 </div>
 
 <script>
@@ -1150,6 +1543,7 @@
       if (el) data[id] = el.value;
     });
     data['_productos'] = productos;
+    data['_customSections'] = customSections;
 
     setSaveStatus('saving');
 
@@ -1195,6 +1589,10 @@
           productos = data['_productos'];
           renderProductos();
         }
+        if (data['_customSections'] && Array.isArray(data['_customSections'])) {
+          customSections = data['_customSections'];
+          renderCustomSections();
+        }
         updatePreview();
         setSaveStatus('saved');
       } else {
@@ -1205,14 +1603,295 @@
     }
   }
 
-  // Auto-save con debounce — se llama desde cada oninput además de updatePreview
+  // Auto-save con debounce
   function scheduleSave() {
     clearTimeout(saveTimeout);
     saveTimeout = setTimeout(saveToSupabase, 1200);
   }
 
-  // Load on start
   window.addEventListener('DOMContentLoaded', loadFromSupabase);
+
+  // ══════════════════════════════════════════════════
+  // SISTEMA DE SECCIONES CUSTOM
+  // ══════════════════════════════════════════════════
+
+  let customSections = []; // Array de { id, emoji, nombre, grupo, tipo, items?, texto? }
+
+  // ── Modal ──
+  function openNewSectionModal() {
+    document.getElementById('modal-overlay').classList.add('open');
+    document.getElementById('modal-nombre').value = '';
+    document.getElementById('modal-emoji').value = '';
+    // reset selections
+    document.querySelectorAll('.type-option').forEach(o => o.classList.remove('selected'));
+    document.querySelector('.type-option[data-type="lista"]').classList.add('selected');
+    document.querySelectorAll('.group-pill').forEach(p => p.classList.remove('selected'));
+    document.querySelector('.group-pill[data-group="General"]').classList.add('selected');
+    setTimeout(() => document.getElementById('modal-nombre').focus(), 50);
+  }
+
+  function closeNewSectionModal() {
+    document.getElementById('modal-overlay').classList.remove('open');
+  }
+
+  function handleOverlayClick(e) {
+    if (e.target === document.getElementById('modal-overlay')) closeNewSectionModal();
+  }
+
+  function selectType(el) {
+    document.querySelectorAll('.type-option').forEach(o => o.classList.remove('selected'));
+    el.classList.add('selected');
+  }
+
+  function selectGroup(el) {
+    document.querySelectorAll('.group-pill').forEach(p => p.classList.remove('selected'));
+    el.classList.add('selected');
+  }
+
+  function createCustomSection() {
+    const nombre = document.getElementById('modal-nombre').value.trim();
+    if (!nombre) { document.getElementById('modal-nombre').focus(); return; }
+
+    const emoji = document.getElementById('modal-emoji').value.trim() || '📝';
+    const tipo = document.querySelector('.type-option.selected')?.dataset.type || 'lista';
+    const grupo = document.querySelector('.group-pill.selected')?.dataset.group || 'General';
+    const id = 'custom_' + Date.now();
+
+    const section = { id, emoji, nombre, grupo, tipo, items: [], texto: '' };
+    customSections.push(section);
+
+    closeNewSectionModal();
+    renderCustomSections();
+    showCustomTab(id);
+    scheduleSave();
+  }
+
+  // ── Render sidebar + panels ──
+  function renderCustomSections() {
+    // Agrupar por grupo
+    const grupos = {};
+    customSections.forEach(s => {
+      if (!grupos[s.grupo]) grupos[s.grupo] = [];
+      grupos[s.grupo].push(s);
+    });
+
+    // Sidebar
+    const sidebar = document.getElementById('custom-sidebar-sections');
+    sidebar.innerHTML = '';
+    Object.entries(grupos).forEach(([grupo, sections]) => {
+      sidebar.innerHTML += `<div class="sidebar-section">${grupo} <span style="color:var(--accent2);font-size:9px">(custom)</span></div>`;
+      sections.forEach(s => {
+        sidebar.innerHTML += `
+          <button class="tab-btn" id="sidebar-btn-${s.id}" onclick="showCustomTab('${s.id}')">
+            <span class="tab-icon">${s.emoji}</span> ${s.nombre}
+            <span class="tab-custom-badge">custom</span>
+          </button>`;
+      });
+    });
+
+    // Panels
+    const panelsContainer = document.getElementById('custom-tab-panels');
+    panelsContainer.innerHTML = '';
+    customSections.forEach(s => {
+      const panel = document.createElement('div');
+      panel.className = 'tab-panel';
+      panel.id = 'tab-' + s.id;
+      panel.innerHTML = buildCustomPanelHTML(s);
+      panelsContainer.appendChild(panel);
+    });
+  }
+
+  function buildCustomPanelHTML(s) {
+    const itemsHTML = s.tipo === 'lista' ? buildItemsHTML(s) : '';
+    const textoHTML = s.tipo === 'texto' ? `
+      <div class="field-group">
+        <label>Contenido</label>
+        <textarea class="tall" id="${s.id}_texto" placeholder="Escribí el contenido de esta sección..." oninput="updateCustomSection('${s.id}')">${escHtml(s.texto || '')}</textarea>
+      </div>` : '';
+
+    return `
+      <div class="panel-header">
+        <h2>${s.emoji} ${escHtml(s.nombre)}</h2>
+        <p>Sección personalizada · tipo: ${s.tipo === 'lista' ? 'lista de items' : 'texto libre'}</p>
+      </div>
+
+      <div class="custom-section-meta">
+        <div class="meta-info">
+          <div class="meta-label">Nombre de la sección</div>
+          <input class="meta-input" type="text" value="${escHtml(s.nombre)}"
+            oninput="renameCustomSection('${s.id}', this.value)" placeholder="Nombre...">
+        </div>
+        <div style="margin-left:8px">
+          <div class="meta-label">Emoji</div>
+          <input type="text" value="${escHtml(s.emoji)}" maxlength="4"
+            oninput="reemojiCustomSection('${s.id}', this.value)"
+            style="width:44px;text-align:center;font-size:18px;background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:4px 6px;color:var(--text);font-family:'DM Mono',monospace;">
+        </div>
+        <button class="btn-delete-section" onclick="deleteCustomSection('${s.id}')">🗑 Eliminar sección</button>
+      </div>
+
+      ${textoHTML}
+      ${s.tipo === 'lista' ? `<div class="custom-items-list" id="${s.id}-items-list">${itemsHTML}</div><button class="btn-add-item" onclick="addCustomItem('${s.id}')">+ Agregar item</button>` : ''}
+
+      <div class="divider"></div>
+      <div class="kb-preview">
+        <div class="kb-preview-header">
+          <span>Preview KB — ${escHtml(s.nombre)}</span>
+        <button class="btn-copy-section" onclick="copySectionFromHeader(this)">Copiar sección</button>
+        </div>
+        <pre id="preview-${s.id}">Completá los campos para ver el preview...</pre>
+      </div>`;
+  }
+
+  function buildItemsHTML(s) {
+    return (s.items || []).map((item, i) => `
+      <div class="custom-item" id="${s.id}-item-${i}">
+        <div class="custom-item-header">
+          <input type="text" value="${escHtml(item.titulo || '')}" placeholder="Título del item..."
+            oninput="updateCustomItem('${s.id}', ${i}, 'titulo', this.value)">
+          <button class="btn-delete-item" onclick="deleteCustomItem('${s.id}', ${i})" title="Eliminar">🗑</button>
+        </div>
+        <textarea placeholder="Descripción..." oninput="updateCustomItem('${s.id}', ${i}, 'descripcion', this.value)">${escHtml(item.descripcion || '')}</textarea>
+      </div>`).join('');
+  }
+
+  // ── Acciones sobre secciones ──
+  function showCustomTab(id) {
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    const panel = document.getElementById('tab-' + id);
+    if (panel) panel.classList.add('active');
+    const btn = document.getElementById('sidebar-btn-' + id);
+    if (btn) btn.classList.add('active');
+    updateCustomPreview(id);
+  }
+
+  function renameCustomSection(id, nombre) {
+    const s = customSections.find(s => s.id === id);
+    if (!s) return;
+    s.nombre = nombre;
+    // update sidebar button text
+    const btn = document.getElementById('sidebar-btn-' + id);
+    if (btn) btn.innerHTML = `<span class="tab-icon">${s.emoji}</span> ${nombre}<span class="tab-custom-badge">custom</span>`;
+    // update panel h2
+    const panel = document.getElementById('tab-' + id);
+    if (panel) { const h2 = panel.querySelector('h2'); if (h2) h2.textContent = `${s.emoji} ${nombre}`; }
+    // update preview label
+    const preLabel = panel?.querySelector('.kb-preview-header span');
+    if (preLabel) preLabel.textContent = `Preview KB — ${nombre}`;
+    updateCustomPreview(id);
+    scheduleSave();
+  }
+
+  function reemojiCustomSection(id, emoji) {
+    const s = customSections.find(s => s.id === id);
+    if (!s) return;
+    s.emoji = emoji;
+    const btn = document.getElementById('sidebar-btn-' + id);
+    if (btn) btn.innerHTML = `<span class="tab-icon">${emoji}</span> ${s.nombre}<span class="tab-custom-badge">custom</span>`;
+    const panel = document.getElementById('tab-' + id);
+    if (panel) { const h2 = panel.querySelector('h2'); if (h2) h2.textContent = `${emoji} ${s.nombre}`; }
+    updateCustomPreview(id);
+    scheduleSave();
+  }
+
+  function deleteCustomSection(id) {
+    if (!confirm('¿Eliminar esta sección? Esta acción no se puede deshacer.')) return;
+    customSections = customSections.filter(s => s.id !== id);
+    renderCustomSections();
+    // Go back to agente tab
+    document.getElementById('tab-agente').classList.add('active');
+    document.querySelector('.tab-btn').classList.add('active');
+    scheduleSave();
+  }
+
+  function updateCustomSection(id) {
+    const s = customSections.find(s => s.id === id);
+    if (!s) return;
+    if (s.tipo === 'texto') {
+      const el = document.getElementById(id + '_texto');
+      if (el) s.texto = el.value;
+    }
+    updateCustomPreview(id);
+    scheduleSave();
+  }
+
+  // ── Items ──
+  function addCustomItem(sectionId) {
+    const s = customSections.find(s => s.id === sectionId);
+    if (!s) return;
+    s.items.push({ titulo: '', descripcion: '' });
+    const list = document.getElementById(sectionId + '-items-list');
+    if (list) list.innerHTML = buildItemsHTML(s);
+    // focus new item
+    const inputs = list?.querySelectorAll('.custom-item-header input');
+    if (inputs?.length) inputs[inputs.length - 1].focus();
+    scheduleSave();
+  }
+
+  function deleteCustomItem(sectionId, index) {
+    const s = customSections.find(s => s.id === sectionId);
+    if (!s) return;
+    s.items.splice(index, 1);
+    const list = document.getElementById(sectionId + '-items-list');
+    if (list) list.innerHTML = buildItemsHTML(s);
+    updateCustomPreview(sectionId);
+    scheduleSave();
+  }
+
+  function updateCustomItem(sectionId, index, field, value) {
+    const s = customSections.find(s => s.id === sectionId);
+    if (!s || !s.items[index]) return;
+    s.items[index][field] = value;
+    updateCustomPreview(sectionId);
+    scheduleSave();
+  }
+
+  // ── Preview ──
+  function updateCustomPreview(id) {
+    const s = customSections.find(s => s.id === id);
+    if (!s) return;
+    const el = document.getElementById('preview-' + id);
+    if (!el) return;
+    el.textContent = generateCustomSectionKB(s) || 'Completá los campos para ver el preview...';
+  }
+
+  function generateCustomSectionKB(s) {
+    let kb = `## ${s.nombre}\n`;
+    if (s.tipo === 'texto') {
+      kb += s.texto ? `${s.texto}\n` : '';
+    } else {
+      const validItems = (s.items || []).filter(i => i.titulo || i.descripcion);
+      if (!validItems.length) return '';
+      validItems.forEach(item => {
+        if (item.titulo) kb += `### ${item.titulo}\n`;
+        if (item.descripcion) kb += `${item.descripcion}\n`;
+        kb += '\n';
+      });
+    }
+    return kb;
+  }
+
+  // helper
+  function escHtml(str) {
+    return String(str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  // ══════════════════════════════════════════════════
+  // INTEGRAR CUSTOM SECTIONS EN LA KB COMPLETA
+  // ══════════════════════════════════════════════════
+
+  // generateKB ya fue declarada arriba; la reemplazamos con una versión
+  // que incluye las secciones custom al final
+  const _generateKBBase = generateKB;
+  generateKB = function() {
+    let kb = _generateKBBase();
+    customSections.forEach(s => {
+      const section = generateCustomSectionKB(s);
+      if (section) kb += '\n' + section;
+    });
+    return kb;
+  };
 
   // --- COPY KB ---
   function copyKB() {
@@ -1227,6 +1906,26 @@
       }, 2000);
     });
   }
+
+  // --- COPY SECTION ---
+  function copySectionFromHeader(btn) {
+    // The pre with the preview content is a sibling of the header div, inside .kb-preview
+    const previewBox = btn.closest('.kb-preview');
+    if (!previewBox) return;
+    const pre = previewBox.querySelector('pre');
+    if (!pre) return;
+    const text = pre.textContent;
+    if (!text || text.startsWith('Completá') || text.startsWith('Agregá')) return;
+    navigator.clipboard.writeText(text).then(() => {
+      btn.textContent = '✓ Copiado';
+      btn.classList.add('copied');
+      setTimeout(() => {
+        btn.textContent = 'Copiar sección';
+        btn.classList.remove('copied');
+      }, 2000);
+    });
+  }
+
 </script>
 </body>
 </html>
